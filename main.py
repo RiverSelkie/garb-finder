@@ -12,23 +12,33 @@ class User (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     password = db.Column(db.String(120))
-    blogs = db.relationship("Entry", backref = "user")
+    saved_item = db.relationship("Item", backref = "user")
 
     def __init__(self, username, password):
         self.username = username
         self.password = password
 
-class Entry(db.Model):
+class Item (db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120))
-    body = db.Column(db.String(2000))
+    name = db.Column(db.String(120))
+    culture = db.Column(db.String(120))
+    climate = db.Column(db.String(120))
+    gender = db.Column(db.String(120))
+    item_type = db.Column(db.String(120))
+    time_period_start = db.Column(db.Integer)
+    time_period_end = db.Column(db.Integer)
+    description = db.Column(db.String(2000))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
-    def __init__(self, title, body, user):
-        self.title = title
-        self.body = body
+    def __init__(self, name, description, user):
+        self.name = name
+        self.description = description
+        self.culture = culture
+        self.climate = climate
+        self.item_type = item_type
+        self.gender = gender
         self.user = user
 
 
