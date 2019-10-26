@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:blogz@localhost:8889/blogz'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://garb-finder:garb-finder@localhost:8889/garb-finder'
 app.config['SQLALCHEMY_ECHO'] = True 
 db = SQLAlchemy(app)
 
@@ -12,7 +12,7 @@ class User (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     password = db.Column(db.String(120))
-    saved_item = db.relationship("Item", backref = "user")
+
 
     def __init__(self, username, password):
         self.username = username
@@ -20,6 +20,7 @@ class User (db.Model):
 
 class Item (db.Model):
 
+    saved_item = db.relationship("Item", backref = "user")
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     culture = db.Column(db.String(120))
