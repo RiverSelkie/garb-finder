@@ -1,0 +1,40 @@
+Database design ideas
+
+Once you've got two tables, a relationship between them, and a web page to edit each,
+it's all cut and paste - you can add all the frills you want with basically the same code.
+
+User table
+	.ID				String, Primary key, must be unique
+	.Name			String		
+
+Item table
+	.Name			String, Primary key, must be unique
+	.ID				String, Foreign key to User.ID, must exist or be blank, auto filled when item is created
+	.Climate		String, Foreign key to Climate.Name, must exist or be blank, used in pull down list
+	.Gender			String, M/F, pull down list (hard coded)
+	.Description	String
+	.Culture		String, Foreign key to Culture.Name, must exist or be blank, used in pull down list
+	.TimeStart		Date (or String, or integer year, or "Era", etc.)
+	.TimeEnd		Date (or String, or integer year, or "Era", etc.)
+
+Climate table
+	.Name			String, Primary key, must be unique
+	.Description	String
+	.Stuff			String
+	.MoreStuff		String
+
+Culture table
+	.Name			String, Primary key, must be unique
+	.Description	String
+	.Stuff			String
+	.MoreStuff		String
+
+A proper 'Data Dictionary' for a project would include for each field:
+
+	Data type (string, disallow special characters, integer, floating point, mm/dd/yy, Male/Female, etc.)
+	Maximum size (the database may be flexible, but web entry forms may not be)
+	Required? (Can it be blank, zero, null, etc.)
+	Relationship rules (what happens to an Item if the User that created it is deleted?  Maybe you can't, or you reassign it)
+
+Note that a foreign key can be constrained such that IF IT IS PROVIDED, it must exist, but blank is okay
+	(So some items might be valid for any climate or any culture)
