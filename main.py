@@ -26,30 +26,33 @@ class Item (db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+    description = db.Column(db.String(2000))
     culture = db.Column(db.String(120))
     climate = db.Column(db.String(120))
     gender = db.Column(db.String(120))
     item_type = db.Column(db.String(120))
     time_period_start = db.Column(db.Integer)
     time_period_end = db.Column(db.Integer)
-    description = db.Column(db.String(2000))
+   
    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     
-    def __init__(self, name, description, user):
+    def __init__(self, name, description, culture, climate, gender, item_type, time_period_start, time_period_end):
         self.name = name
         self.description = description
         self.culture = culture
         self.climate = climate
-        self.item_type = item_type
         self.gender = gender
-        self.user = user
+        self.item_type = item_type
+        self.time_period_end = time_period_start
+        self.time_period_end = time_period_end
 
  
 class Climate (db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    # name = db.Column(db.String120))
 
     def __init__(self, name):
-        self.name
+        self.name = name
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -124,7 +127,12 @@ def avocado():
 
 @app.route('/index')
 def index():
-    return render_template("index.html")
+    items = Item.query.all()
+    return render_template('index.html', items=items)
+
+@app.route('/saved_items')
+def my_stuff():
+    return render_template("saved_items")
 
 @app.route("/welcome")
 def welcome_in():
