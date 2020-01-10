@@ -14,7 +14,7 @@ class User (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     password = db.Column(db.String(120))
-    #saved_item = db.relationship("Item", backref = "user")
+    #saved_item = db.relationship("Item", backref = "owner")
 
 
     def __init__(self, username, password):
@@ -26,25 +26,27 @@ class Item (db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
-    description = db.Column(db.String(2000))
-    culture = db.Column(db.String(120))
-    climate = db.Column(db.String(120))
-    gender = db.Column(db.String(120))
-    item_type = db.Column(db.String(120))
-    time_period_start = db.Column(db.Integer)
-    time_period_end = db.Column(db.Integer)
+    # description = db.Column(db.String(2000))
+    # culture = db.Column(db.String(120))
+    # climate = db.Column(db.String(120))
+    # gender = db.Column(db.String(120))
+    # item_type = db.Column(db.String(120)) 
+    # time_period_start = db.Column(db.Integer)
+    # time_period_end = db.Column(db.Integer)
    
-   # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     
-    def __init__(self, name, description, culture, climate, gender, item_type, time_period_start, time_period_end):
+    def __init__(self, name):
+    # , description, culture, climate, gender, item_type, time_period_start, time_period_end
         self.name = name
-        self.description = description
-        self.culture = culture
-        self.climate = climate
-        self.gender = gender
-        self.item_type = item_type
-        self.time_period_end = time_period_start
-        self.time_period_end = time_period_end
+        # self.description = description
+        # self.culture = culture
+        # self.climate = climate
+        # self.gender = gender
+        # self.item_type = item_type
+        # self.time_period_end = time_period_start
+        # self.time_period_end = time_period_end
+        # self.owner = owner
 
  
 class Climate (db.Model):
@@ -125,8 +127,15 @@ def signup():
 def avocado():
   return render_template("home.html")
 
-@app.route('/index')
+@app.route('/index', methods=['POST', 'GET'])
 def index():
+
+    if request.method == 'POST':
+        item_name = request.form['item']
+        new_item = Item(item_name)
+        db.session.add(new_item)
+        db.session.commit()
+
     items = Item.query.all()
     return render_template('index.html', items=items)
 
