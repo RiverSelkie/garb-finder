@@ -14,7 +14,7 @@ class User (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     password = db.Column(db.String(120))
-    #saved_item = db.relationship("Item", backref = "owner")
+    saved_item = db.relationship("Item", backref = "owner")
 
 
     def __init__(self, username, password):
@@ -25,7 +25,7 @@ class User (db.Model):
 class Item (db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
+    name = db.Column(db.String(120), unique=True)
     # description = db.Column(db.String(2000))
     # culture = db.Column(db.String(120))
     # climate = db.Column(db.String(120))
@@ -34,9 +34,9 @@ class Item (db.Model):
     # time_period_start = db.Column(db.Integer)
     # time_period_end = db.Column(db.Integer)
    
-    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
-    def __init__(self, name):
+    def __init__(self, name, owner):
     # , description, culture, climate, gender, item_type, time_period_start, time_period_end
         self.name = name
         # self.description = description
@@ -46,7 +46,7 @@ class Item (db.Model):
         # self.item_type = item_type
         # self.time_period_end = time_period_start
         # self.time_period_end = time_period_end
-        # self.owner = owner
+        self.owner = owner
 
  
 class Climate (db.Model):
@@ -75,18 +75,11 @@ def login():
             error_bool=True    
         if error_bool == False:
             session['user'] = username 
-            return redirect('/home')
+            return redirect('/saved_items')
         else:
             return render_template("login.html", incorrect_info=incorrect_info)    
     return render_template("login.html")
     
-@app.route('/logout')
-def logout():
-    if "user" in session:
-        del session['user']
-    return redirect('/blog')
-
-
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     mismatch=""
@@ -122,6 +115,19 @@ def signup():
     else: 
         return render_template("signup.html")
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup', 'home', 'index']
+    if request.endpoint not in allowed_routes and 'user' not in session:
+    # restricted_routes = ['saved_items']
+    # if request.endpoint in restricted_routes and 'user' not in session:
+        return redirect('/login')
+
+@app.route('/logout')
+def logout():
+    if "user" in session:
+        del session['user']
+    return redirect('/home')
 
 @app.route('/home')
 def avocado():
@@ -129,19 +135,18 @@ def avocado():
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
-
-    if request.method == 'POST':
-        item_name = request.form['item']
-        new_item = Item(item_name)
-        db.session.add(new_item)
-        db.session.commit()
-
     items = Item.query.all()
     return render_template('index.html', items=items)
 
-@app.route('/saved_items')
+@app.route('/saved_items', methods=['POST', 'GET'])
 def my_stuff():
-    return render_template("saved_items")
+    if request.method == 'POST':
+        item_name = request.form['item']
+        owner = User.query.filter_by(username=session['username']).first()
+        new_item = Item(item_name, owner)
+        db.session.add(new_item)
+        db.session.commit()
+    return render_template("saved_items.html")
 
 @app.route("/welcome")
 def welcome_in():
