@@ -14,7 +14,7 @@ class User (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     password = db.Column(db.String(120))
-    #saved_item = db.relationship("Item", backref = "user")
+    #saved_item = db.relationship("Item", backref = "owner")
 
 
     def __init__(self, username, password):
@@ -128,7 +128,7 @@ def signup():
 def avocado():
   return render_template("home.html")
 
-@app.route('/index')
+@app.route('/index', methods=['POST', 'GET'])
 def index():
     for item in Item.query.all():
         print(item.name, item.description)
