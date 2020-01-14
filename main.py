@@ -39,6 +39,7 @@ class Item (db.Model):
     def __init__(self, name, owner):
     # , description, culture, climate, gender, item_type, time_period_start, time_period_end
         self.name = name
+        self.owner = owner
         # self.description = description
         # self.culture = culture
         # self.climate = climate
@@ -46,7 +47,7 @@ class Item (db.Model):
         # self.item_type = item_type
         # self.time_period_end = time_period_start
         # self.time_period_end = time_period_end
-        self.owner = owner
+       
 
  
 class Climate (db.Model):
@@ -142,7 +143,13 @@ def index():
 def my_stuff():
     if request.method == 'POST':
         item_name = request.form['item']
-        owner = User.query.filter_by(username=session['username']).first()
+        print("++++++++++")
+        print("/saved_items: item_name=", item_name)
+        print("/saved_items: session['user']=",session['user'])
+        print("++++++++++")
+        owner = User.query.filter_by(username=session['user']).first()
+        print("/saved_items: owner= ", owner)
+        print("++++++++++++")
         new_item = Item(item_name, owner)
         db.session.add(new_item)
         db.session.commit()
