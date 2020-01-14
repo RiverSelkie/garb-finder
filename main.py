@@ -1,18 +1,12 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy 
 
-
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://garb-finder:garb-finder@localhost:8889/garb-finder'
-<<<<<<< HEAD
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = "Your_secret_string"
-
-=======
-app.config['SQLALCHEMY_ECHO'] = True 
-app.config['SECRET_KEY'] = "Your_secret_string"
->>>>>>> bbc1385268388352940a65c7f8a834a14699ac5c
 db = SQLAlchemy(app)
 
 class User (db.Model):
@@ -29,12 +23,9 @@ class User (db.Model):
         
 
 class Item (db.Model):
-<<<<<<< HEAD
 
  #   saved_item = db.relationship("Item", backref = "user")
-=======
     
->>>>>>> bbc1385268388352940a65c7f8a834a14699ac5c
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     culture = db.Column(db.String(120))
@@ -44,29 +35,28 @@ class Item (db.Model):
     time_period_start = db.Column(db.Integer)
     time_period_end = db.Column(db.Integer)
     description = db.Column(db.String(2000))
-<<<<<<< HEAD
+    user_id = db.Column(db.Integer)
+
  #   user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
-
-=======
-   # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    
->>>>>>> bbc1385268388352940a65c7f8a834a14699ac5c
-    def __init__(self, name, description, user):
+    def __init__(self, name, culture, climate, gender, item_type, time_period_start, time_period_end, description, user):
         self.name = name
-        self.description = description
         self.culture = culture
         self.climate = climate
-        self.item_type = item_type
         self.gender = gender
+        self.item_type = item_type
+        self.time_period_start = time_period_start
+        self.time_period_end = time_period_end
+        self.description = description
         self.user = user
 
- 
 class Climate (db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(2000))
 
     def __init__(self, name):
-        self.name
+        self.name = name
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -140,7 +130,11 @@ def avocado():
 
 @app.route('/index')
 def index():
-    return render_template("index.html")
+    for item in Item.query.all():
+        print(item.name, item.description)
+    items = Item.query.all()
+    print(items)
+    return render_template("index.html",items=items)
 
 @app.route("/welcome")
 def welcome_in():
