@@ -143,22 +143,16 @@ def index():
 def my_stuff():
     if request.method == 'POST':
         item_name = request.form['item']
-        print("++++++++++")
-        print("/saved_items: item_name=", item_name)
-        print("/saved_items: session['user']=",session['user'])
-        print("++++++++++")
         owner = User.query.filter_by(username=session['user']).first()
-        print("/saved_items: owner= ", owner)
-        print("++++++++++++")
         new_item = Item(item_name, owner)
         db.session.add(new_item)
         db.session.commit()
     return render_template("saved_items.html")
 
-@app.route("/welcome")
-def welcome_in():
-    username = request.args.get("username")  
-    return render_template("welcome.html", username=username)
+# @app.route("/welcome")
+# def welcome_in():
+#     username = request.args.get("username")  
+#     return render_template("welcome.html", username=username)
 
 @app.route("/")
 def default():
