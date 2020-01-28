@@ -11,8 +11,9 @@
     <input type="submit" value='Add Item' />
 </form>
 
-    <!-- {% if items|length == 0 %}
+    {% if items|length == 0 %}
     <p>No saved items yet</p>
+    
     {% else %} -->
 
         <ul>
@@ -21,15 +22,17 @@
                 <div class="comments">
                     <h1>{{item.name}}</h1>
                     <br>  
-                    <p>{{item.culture}}</p>
+                    <!-- <p>{{item.culture}}</p>
                     <p>{{item.climate}}</p> 
                     <p>{{item.time_period_start}}</p>
                     <p>{{item.time_period_end}}</p>
                     <p>{{item.gender}}</p>
-                    <p>{{item.description}}</p>
-
+                    <p>{{item.description}}</p> -->
+                    <form method ='post'>
+                        <input type="submit" value="Remove Item">
+                    </form>
                 </div> 
-
+                
             {% endfor %}
         </ul>
     {% endif %}

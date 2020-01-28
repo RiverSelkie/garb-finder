@@ -25,8 +25,7 @@ class User (db.Model):
 class Item (db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
-    owner = db.Column(db.String(120), db.ForeignKey(User.username))
+    name = db.Column(db.String(120))
     # description = db.Column(db.String(2000))
     # culture = db.Column(db.String(120))
     # climate = db.Column(db.String(120))
@@ -34,13 +33,12 @@ class Item (db.Model):
     # item_type = db.Column(db.String(120)) 
     # time_period_start = db.Column(db.Integer)
     # time_period_end = db.Column(db.Integer)
-   
+    owner = db.Column(db.String(120), db.ForeignKey(User.username))
     
-    
-    def __init__(self, name, owner):
-    # , description, culture, climate, gender, item_type, time_period_start, time_period_end
+    def __init__(self, name,  owner):
+    # description, culture, climate, gender, item_type, time_period_start, time_period_end,
+
         self.name = name
-        self.owner = owner
         # self.description = description
         # self.culture = culture
         # self.climate = climate
@@ -48,13 +46,19 @@ class Item (db.Model):
         # self.item_type = item_type
         # self.time_period_end = time_period_start
         # self.time_period_end = time_period_end
+        self.owner = owner
 
-       
 
- 
+class Culture (db.Model):
+    name = db.Column(db.String(120), primary_key=True)
+
+    def __init__(self, name):
+            self.name = name
+
+        
 class Climate (db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String120))
+
+    name = db.Column(db.String(120), primary_key=True)
 
     def __init__(self, name):
         self.name = name
@@ -138,6 +142,8 @@ def avocado():
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
+    # if request.method == 'POST':
+    #     add_owner = 
     items = Item.query.all()
     return render_template('index.html', items=items)
 
