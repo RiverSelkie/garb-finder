@@ -16,7 +16,6 @@ class User (db.Model):
     password = db.Column(db.String(120))
     #saved_item = db.relationship("Item", backref = "owner")
 
-
     def __init__(self, username, password):
         self.username = username
         self.password = password  
@@ -49,7 +48,21 @@ class Item (db.Model):
         self.owner = owner
 
 
+class Kit (db.Model):
+    
+    kit_id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey(Item.id))
+    username = db.Column(db.String(120), db.ForeignKey(User.username))
+
+    def __init__(self, kit_id, item_id, username):
+
+        self.kit_id = kit_id
+        self.item_id = item_id
+        self.username = username
+
+
 class Culture (db.Model):
+
     name = db.Column(db.String(120), primary_key=True)
 
     def __init__(self, name):
@@ -142,8 +155,18 @@ def avocado():
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
-    # if request.method == 'POST':
-    #     add_owner = 
+    if request.method == 'POST':
+        item_id = request.form['name']
+        user = User.query.filter_by(username=session['user']).first()
+        print ("====")
+        print (user)
+        print ("====")
+        new_kit = Kit(item_id, user.username)
+        print ("=====")
+        print (user.username)
+        print ("=====")
+        db.session.add(new_kit)
+        db.session.commit()
     items = Item.query.all()
     return render_template('index.html', items=items)
 
@@ -152,9 +175,6 @@ def my_stuff():
     if request.method == 'POST':
         item_name = request.form['item']
         owner = User.query.filter_by(username=session['user']).first()
-        print ("====")
-        print (owner)
-        print ("====")
         new_item = Item(item_name, owner.username)
         db.session.add(new_item)
         db.session.commit()
