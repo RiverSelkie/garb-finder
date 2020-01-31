@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://garb-finder:garb-finder@localhost:8889/garb-finder'
-app.config['SQLALCHEMY_ECHO'] = True 
+# app.config['SQLALCHEMY_ECHO'] = True 
 app.config['SECRET_KEY'] = "Your_secret_string"
 db = SQLAlchemy(app)
 
@@ -54,9 +54,8 @@ class Kit (db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey(Item.id))
     username = db.Column(db.String(120), db.ForeignKey(User.username))
 
-    def __init__(self, kit_id, item_id, username):
+    def __init__(self, item_id, username):
 
-        self.kit_id = kit_id
         self.item_id = item_id
         self.username = username
 
@@ -156,15 +155,19 @@ def avocado():
 @app.route('/index', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        item_id = request.form['name']
+        print("=====1")
+        print (request.form)
+        item_id = request.form.get('name')
+        print ("=====2")
+        print (item_id)
         user = User.query.filter_by(username=session['user']).first()
-        print ("====")
+        print ("=====4")
         print (user)
-        print ("====")
         new_kit = Kit(item_id, user.username)
-        print ("=====")
+        print ("=====5")
         print (user.username)
-        print ("=====")
+        print ("=====6")
+        print (new_kit)
         db.session.add(new_kit)
         db.session.commit()
     items = Item.query.all()
