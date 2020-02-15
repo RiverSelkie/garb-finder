@@ -1,11 +1,11 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy 
 
-
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://garb-finder:garb-finder@localhost:8889/garb-finder'
-app.config['SQLALCHEMY_ECHO'] = True 
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = "Your_secret_string"
 db = SQLAlchemy(app)
 
@@ -22,9 +22,12 @@ class User (db.Model):
         
 
 class Item (db.Model):
+
+ #   saved_item = db.relationship("Item", backref = "user")
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+<<<<<<< HEAD
     # description = db.Column(db.String(2000))
     # culture = db.Column(db.String(120))
     # climate = db.Column(db.String(120))
@@ -72,6 +75,34 @@ class Culture (db.Model):
 class Climate (db.Model):
 
     name = db.Column(db.String(120), primary_key=True)
+=======
+    culture = db.Column(db.String(120))
+    climate = db.Column(db.String(120))
+    gender = db.Column(db.String(120))
+    item_type = db.Column(db.String(120))
+    time_period_start = db.Column(db.Integer)
+    time_period_end = db.Column(db.Integer)
+    description = db.Column(db.String(2000))
+    user_id = db.Column(db.Integer)
+
+ #   user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __init__(self, name, culture, climate, gender, item_type, time_period_start, time_period_end, description, user):
+        self.name = name
+        self.culture = culture
+        self.climate = climate
+        self.gender = gender
+        self.item_type = item_type
+        self.time_period_start = time_period_start
+        self.time_period_end = time_period_end
+        self.description = description
+        self.user = user
+
+class Climate (db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(2000))
+>>>>>>> 1c187eae33780a801c8f2af3cb7cce57d51c4698
 
     def __init__(self, name):
         self.name = name
@@ -135,6 +166,7 @@ def signup():
     else: 
         return render_template("signup.html")
 
+<<<<<<< HEAD
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'signup', 'home', 'index']
@@ -149,12 +181,15 @@ def logout():
         del session['user']
     return redirect('/home')
 
+=======
+>>>>>>> 1c187eae33780a801c8f2af3cb7cce57d51c4698
 @app.route('/home')
 def avocado():
   return render_template("home.html")
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
+<<<<<<< HEAD
     if request.method == 'POST':
         item_id = request.form['name']
         user = User.query.filter_by(username=session['user']).first()
@@ -189,6 +224,18 @@ def my_stuff():
 # def welcome_in():
 #     username = request.args.get("username")  
 #     return render_template("welcome.html", username=username)
+=======
+    for item in Item.query.all():
+        print(item.name, item.description)
+    items = Item.query.all()
+    print(items)
+    return render_template("index.html",items=items)
+
+@app.route("/welcome")
+def welcome_in():
+    username = request.args.get("username")  
+    return render_template("welcome.html", username=username)
+>>>>>>> 1c187eae33780a801c8f2af3cb7cce57d51c4698
 
 @app.route("/")
 def default():
