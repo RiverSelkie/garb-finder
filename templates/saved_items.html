@@ -11,16 +11,16 @@
     <input type="submit" value='Add Item' />
 </form>
 
-    {% if items|length == 0 %}
+    {% if kit_items|length == 0 %}
     <p>No saved items yet</p>
 
     {% else %} 
 
-        <ul>
-            {% for item in items %}
+        <ul> 
+            {% for item in kit_items %}
 
                 <div class="comments">
-                    <h1>{{item.name}}</h1>
+                    <h1>{{item.avocado.name}}</h1>
                     <br>  
                     <!-- <p>{{item.culture}}</p>
                     <p>{{item.climate}}</p> 
